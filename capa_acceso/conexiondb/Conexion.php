@@ -21,24 +21,16 @@ class Conexion
         $this->password = $getEnv('MYSQLPASSWORD', '');
     }
 
-    public function conectar()
-    {
-        try {
-            $url = $_ENV['MYSQL_URL'] ?? getenv('MYSQL_URL');
-
-            if ($url) {
-                $pdo = new PDO($url);
-            } else {
-                $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->db};charset=utf8mb4";
-                $pdo = new PDO($dsn, $this->usuario, $this->password);
-            }
-
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $pdo;
-
-        } catch (PDOException $e) {
-            error_log("Error de conexión a BD: " . $e->getMessage());
-            throw new Exception("Error de conexión a la base de datos. Contacte al administrador.");
-        }
+   public function conectar()
+{
+    try {
+        $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->db};charset=utf8mb4";
+        $pdo = new PDO($dsn, $this->usuario, $this->password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
+    } catch(PDOException $e) {
+        // ⚠️ Temporal: mostrar el error real (NO hacer esto en producción)
+        die("Error de conexión PDO: " . $e->getMessage());
     }
+}
 }
