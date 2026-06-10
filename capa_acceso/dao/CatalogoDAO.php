@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../conexion/Conexion.php';
+require_once __DIR__ . '/../Conexion/Conexion.php';
 
 class CatalogoDAO {
     private $db;

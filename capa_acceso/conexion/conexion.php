@@ -18,7 +18,7 @@ class Conexion
 
         // Railway inyecta estas variables automáticamente al agregar el servicio MySQL
         $this->host = $getEnv('MYSQLHOST', '127.0.0.1');
-        $this->port = $getEnv('MYSQLPORT', '3306');      // Railway usa 3306
+        $this->port = $getEnv('MYSQLPORT', '3307');      // Railway usa 3306
         $this->db   = $getEnv('MYSQLDATABASE', 'solicitud_final'); // Railway usa "railway" por defecto
         $this->usuario = $getEnv('MYSQLUSER', 'root');
         $this->password = $getEnv('MYSQLPASSWORD', '');

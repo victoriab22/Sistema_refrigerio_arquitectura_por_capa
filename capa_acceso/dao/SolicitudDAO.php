@@ -1,11 +1,11 @@
 <?php
-require_once __DIR__ . '/../conexion/Conexion.php';
+require_once __DIR__ . '/../Conexion/Conexion.php';
 
 class SolicitudDAO {
-    private $conexion;
+    private $Conexion;
 
     public function __construct() {
-        $this->conexion = (new Conexion())->conectar();
+        $this->Conexion = (new Conexion())->conectar();
     }
 
     public function generarRadicado() {
@@ -26,9 +26,9 @@ class SolicitudDAO {
             :telefono, :cargo_solicitante, :nombre_evento, :lugar_evento,
             :cantidad_dias, :fecha_inicio, :fecha_fin
         )";
-        $stmt = $this->conexion->prepare($sql);
+        $stmt = $this->Conexion->prepare($sql);
         $stmt->execute($datos);
-        return $this->conexion->lastInsertId();
+        return $this->Conexion->lastInsertId();
     }
 
     public function actualizar($datos) {
@@ -50,7 +50,7 @@ class SolicitudDAO {
                 fecha_inicio = :fecha_inicio,
                 fecha_fin = :fecha_fin
             WHERE id = :id";
-    $stmt = $this->conexion->prepare($sql);
+    $stmt = $this->Conexion->prepare($sql);
     return $stmt->execute($datos);
 }
 
@@ -60,7 +60,7 @@ class SolicitudDAO {
                 JOIN usuarios u ON s.usuario_id = u.id
                 JOIN estados_solicitud e ON s.estado_id = e.id
                 ORDER BY s.id DESC";
-        return $this->conexion->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        return $this->Conexion->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function listarPorUsuario($usuarioId) {
@@ -69,7 +69,7 @@ class SolicitudDAO {
                 JOIN estados_solicitud e ON s.estado_id = e.id
                 WHERE s.usuario_id = :usuario_id
                 ORDER BY s.id DESC";
-        $stmt = $this->conexion->prepare($sql);
+        $stmt = $this->Conexion->prepare($sql);
         $stmt->execute(['usuario_id' => $usuarioId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -80,7 +80,7 @@ class SolicitudDAO {
                 JOIN usuarios u ON s.usuario_id = u.id
                 JOIN estados_solicitud e ON s.estado_id = e.id
                 WHERE s.id = :id";
-        $stmt = $this->conexion->prepare($sql);
+        $stmt = $this->Conexion->prepare($sql);
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -88,20 +88,20 @@ class SolicitudDAO {
    public function actualizarEstado($id, $nuevoEstadoId, $usuarioId, $observacion = null) {
     // Obtener el estado actual antes de actualizar
     $sqlActual = "SELECT estado_id FROM solicitudes WHERE id = :id";
-    $stmtActual = $this->conexion->prepare($sqlActual);
+    $stmtActual = $this->Conexion->prepare($sqlActual);
     $stmtActual->execute(['id' => $id]);
     $estadoAnterior = $stmtActual->fetchColumn();
     
     // Actualizar la solicitud
     $sqlUpdate = "UPDATE solicitudes SET estado_id = :estado_id WHERE id = :id";
-    $stmtUpdate = $this->conexion->prepare($sqlUpdate);
+    $stmtUpdate = $this->Conexion->prepare($sqlUpdate);
     $stmtUpdate->execute(['estado_id' => $nuevoEstadoId, 'id' => $id]);
     
     // Insertar en historial_estados (siempre, aunque no haya observación)
     $sqlHist = "INSERT INTO historial_estados 
                 (solicitud_id, estado_anterior_id, estado_nuevo_id, usuario_id, observacion, fecha) 
                 VALUES (:sid, :anterior, :nuevo, :uid, :obs, NOW())";
-    $stmtHist = $this->conexion->prepare($sqlHist);
+    $stmtHist = $this->Conexion->prepare($sqlHist);
     $stmtHist->execute([
         'sid' => $id,
         'anterior' => $estadoAnterior ?: null,
@@ -115,7 +115,7 @@ class SolicitudDAO {
 
     public function eliminar($id) {
         $sql = "DELETE FROM solicitudes WHERE id = :id";
-        $stmt = $this->conexion->prepare($sql);
+        $stmt = $this->Conexion->prepare($sql);
         return $stmt->execute(['id' => $id]);
     }
 }
