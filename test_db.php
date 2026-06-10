@@ -3,7 +3,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__ . '/capa_acceso/conexion/Conexion.php';
+require_once __DIR__ . '/capa_acceso/conexiondb/Conexion.php';
 
 try {
     $conn = new Conexion();
